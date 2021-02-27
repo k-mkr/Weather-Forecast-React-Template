@@ -1,6 +1,8 @@
 import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 
+import API from '../api'
+
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
 
@@ -45,10 +47,9 @@ export const actionCreators = {
         // Only load data if it's something we don't already have (and are not already loading)
         const appState = getState();
         if (appState && appState.weatherForecasts && startDateIndex !== appState.weatherForecasts.startDateIndex) {
-            fetch(`weatherforecast`)
-                .then(response => response.json() as Promise<WeatherForecast[]>)
+            API.get<WeatherForecast[]>(`weatherforecast`)
                 .then(data => {
-                    dispatch({ type: 'RECEIVE_WEATHER_FORECASTS', startDateIndex: startDateIndex, forecasts: data });
+                    dispatch({ type: 'RECEIVE_WEATHER_FORECASTS', startDateIndex: startDateIndex, forecasts: data.data });
                 });
 
             dispatch({ type: 'REQUEST_WEATHER_FORECASTS', startDateIndex: startDateIndex });
